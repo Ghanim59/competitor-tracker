@@ -7,7 +7,12 @@ digest of anything new since the last run.
 ## What it checks out of the box
 - App Store version + release notes (official iTunes Lookup API — no key needed)
 - Google Play version + "What's new" notes
-- TikTok Newsroom RSS feed (verify this URL still resolves — see note below)
+- Newsroom/blog RSS feeds — **you need to fill these in.** TikTok doesn't
+  publish a native RSS feed, so generate one for free at rss.app pointed
+  at `https://newsroom.tiktok.com/en-us/news`, then paste the generated
+  URL into `RSS_FEEDS` in `competitor_tracker.py`, replacing
+  `"PASTE_YOUR_RSS_APP_URL_HERE"`. Do the same for Bigo's blog if you
+  find one. Any entry still starting with `PASTE_` is skipped automatically.
 
 ## Setup (GitHub Actions — free, no server needed)
 
