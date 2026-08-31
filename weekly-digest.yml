@@ -25,6 +25,23 @@ jobs:
       - name: Run tracker
         run: python competitor_tracker.py
 
+      - name: Get today's date
+        id: today
+        run: echo "date=$(date -u +'%Y-%m-%d')" >> "$GITHUB_OUTPUT"
+
+      - name: Email the digest
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          from: Competitor Tracker <${{ secrets.MAIL_USERNAME }}>
+          to: ${{ secrets.MAIL_TO }}
+          subject: "Weekly Competitor Digest — ${{ steps.today.outputs.date }}"
+          body: "This week's competitor update digest is attached."
+          attachments: digests/digest-${{ steps.today.outputs.date }}.docx
+
       - name: Commit digest and state
         run: |
           git config user.name "competitor-bot"
