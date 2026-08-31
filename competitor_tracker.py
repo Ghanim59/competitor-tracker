@@ -34,11 +34,14 @@ PLAY_STORE_APPS = {
     "Bigo Live": "sg.bigo.live",
 }
 
-# Official blogs / newsrooms. VERIFY these RSS URLs still work before
-# relying on them -- feed URLs change and not every company has one.
+# Official blogs / newsrooms. TikTok does not publish a native RSS feed,
+# so these use feed URLs generated at https://rss.app (free plan) pointed
+# at each company's newsroom/blog page. Paste your generated URLs below,
+# replacing the "PASTE_..." placeholders. Leave a line commented out (#)
+# to skip that source until you have a working feed URL for it.
 RSS_FEEDS = {
-    "TikTok Newsroom": "https://newsroom.tiktok.com/en-us/rss",
-    # "Bigo Blog": "https://www.bigo.tv/blog/feed",  # example - confirm URL
+    "TikTok Newsroom": "PASTE_YOUR_RSS_APP_URL_HERE",
+    # "Bigo Blog": "PASTE_YOUR_RSS_APP_URL_HERE",
 }
 
 STATE_FILE = "state.json"
@@ -115,6 +118,8 @@ def check_play_store(state, updates):
 
 def check_rss(state, updates):
     for name, url in RSS_FEEDS.items():
+        if not url or url.startswith("PASTE_"):
+            continue  # skip until a real feed URL is filled in
         try:
             feed = feedparser.parse(url)
             seen = set(state.get(f"rss:{name}", []))
