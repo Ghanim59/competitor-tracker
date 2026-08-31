@@ -1,8 +1,9 @@
 # Competitor Update Tracker
 
 Weekly job that checks TikTok and Bigo Live's App Store / Google Play
-release notes, plus TikTok's newsroom RSS feed, and writes a Markdown
-digest of anything new since the last run.
+release notes, plus their official blogs, and writes a Word report
+(`digest-<date>.docx`) of anything new since the last run — a Markdown
+copy is saved alongside it too.
 
 ## What it checks out of the box
 - App Store version + release notes (official iTunes Lookup API — no key needed)
@@ -27,8 +28,8 @@ digest of anything new since the last run.
 4. Go to the **Actions** tab, select "Weekly Competitor Digest", and click
    **Run workflow** once to test it.
 5. Check the `digests/` folder in your repo (or the Actions run's
-   **Artifacts** section) for `digest-<date>.md` — that's your downloadable
-   weekly file.
+   **Artifacts** section) for `digest-<date>.docx` — that's your downloadable
+   weekly Word report (a `.md` copy sits next to it).
 
 It will then run automatically every Monday at 06:00 UTC (edit the `cron`
 line in the workflow file to change this).

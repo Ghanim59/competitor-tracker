@@ -7,8 +7,9 @@ Checks:
   - Google Play version/release notes (via google-play-scraper library)
   - RSS feeds (official blogs/newsrooms)
 
-Writes a Markdown digest to ./digests/digest-<date>.md containing only
-what's NEW since the last run (tracked in state.json).
+Writes a Word report to ./digests/digest-<date>.docx (and a Markdown
+copy alongside it) containing only what's NEW since the last run
+(tracked in state.json).
 """
 
 import json
@@ -18,6 +19,9 @@ from datetime import datetime, timedelta
 import feedparser
 import requests
 from google_play_scraper import app as gp_app
+from docx import Document
+from docx.shared import Pt, RGBColor
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
 # ---------------- CONFIG: edit these ----------------
 
@@ -142,19 +146,22 @@ def check_rss(state, updates):
             updates.append({"app": name, "source": name, "type": "ERROR", "detail": str(e)})
 
 
-def write_digest(updates):
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
-    date_str = datetime.utcnow().strftime("%Y-%m-%d")
+def group_by_app(updates):
+    by_app = {}
+    for u in updates:
+        by_app.setdefault(u["app"], []).append(u)
+    return by_app
+
+
+def write_digest_md(updates, date_str):
+    """Plain-text Markdown copy — handy for quick viewing on GitHub itself."""
     path = os.path.join(OUTPUT_DIR, f"digest-{date_str}.md")
     with open(path, "w") as f:
         f.write(f"# Competitor Update Digest — {date_str}\n\n")
         if not updates:
             f.write("No new updates detected since the last run.\n")
         else:
-            by_app = {}
-            for u in updates:
-                by_app.setdefault(u["app"], []).append(u)
-            for app_name, items in by_app.items():
+            for app_name, items in group_by_app(updates).items():
                 f.write(f"## {app_name}\n\n")
                 for u in items:
                     f.write(f"- **[{u['source']}] {u['type']}:** {u['detail']}\n")
@@ -162,15 +169,49 @@ def write_digest(updates):
     return path
 
 
+def write_digest_docx(updates, date_str):
+    """The Word report — this is the file to open and share with the team."""
+    path = os.path.join(OUTPUT_DIR, f"digest-{date_str}.docx")
+    doc = Document()
+
+    title = doc.add_heading(f"Competitor Update Digest — {date_str}", level=0)
+    title.alignment = WD_ALIGN_PARAGRAPH.LEFT
+
+    if not updates:
+        p = doc.add_paragraph("No new updates detected since the last run.")
+        p.runs[0].italic = True
+    else:
+        for app_name, items in group_by_app(updates).items():
+            doc.add_heading(app_name, level=1)
+            for u in items:
+                p = doc.add_paragraph(style="List Bullet")
+                tag_run = p.add_run(f"[{u['source']}] ")
+                tag_run.bold = True
+                tag_run.font.size = Pt(10)
+                if u["type"] == "ERROR":
+                    tag_run.font.color.rgb = RGBColor(0xC0, 0x00, 0x00)
+                type_run = p.add_run(f"{u['type']}: ")
+                type_run.bold = True
+                p.add_run(u["detail"])
+
+    doc.save(path)
+    return path
+
+
 def main():
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    date_str = datetime.utcnow().strftime("%Y-%m-%d")
+
     state = load_state()
     updates = []
     check_itunes(state, updates)
     check_play_store(state, updates)
     check_rss(state, updates)
-    path = write_digest(updates)
+
+    docx_path = write_digest_docx(updates, date_str)
+    md_path = write_digest_md(updates, date_str)
     save_state(state)
-    print(f"Digest written to {path} ({len(updates)} item(s))")
+    print(f"Digest written to {docx_path} and {md_path} ({len(updates)} item(s))")
 
 
 if __name__ == "__main__":
