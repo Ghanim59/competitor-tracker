@@ -1,0 +1,43 @@
+name: Weekly Competitor Digest
+
+on:
+  schedule:
+    # Every Monday at 06:00 UTC — edit the cron to change day/time
+    - cron: '0 6 * * 1'
+  workflow_dispatch: {}  # lets you trigger it manually from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tracker
+        run: python competitor_tracker.py
+
+      - name: Commit digest and state
+        run: |
+          git config user.name "competitor-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add state.json digests/
+          git commit -m "Weekly competitor digest $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          # Pull any commits made to main since this job checked it out,
+          # then retry the push once before giving up.
+          git pull --rebase origin main || true
+          git push || (sleep 5 && git pull --rebase origin main && git push)
+
+      - name: Upload digest as downloadable artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: competitor-digest
+          path: digests/
