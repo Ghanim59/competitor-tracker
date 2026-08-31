@@ -3,5 +3,17 @@
   "ios:Bigo Live": "6.51.2",
   "android:TikTok": "Varies with device",
   "android:Bigo Live": "6.53.1",
-  "rss:TikTok Newsroom": []
+  "rss:TikTok Newsroom": [],
+  "rss:Bigo Events": [
+    "https://blog.bigo.tv/news-events/bigo-awards-gala",
+    "https://blog.bigo.tv/news-events/bigo-live-essports-world-cup-2026",
+    "https://blog.bigo.tv/news-events/bigo-live-creator-success-beyond-follower-counts",
+    "https://blog.bigo.tv/news-events/bigo-live-philippines-pride-month-lgbtqia-creators-2026",
+    "https://blog.bigo.tv/news-events/bigo-live-10th-anniversary-global-app-store-features",
+    "https://blog.bigo.tv/news-events/bigo-live-survey-online-connection-loneliness",
+    "https://blog.bigo.tv/news-events/bigo-live-10th-anniversary",
+    "https://blog.bigo.tv/news-events/bigo-awards-gala-2026-seoul-recap",
+    "https://blog.bigo.tv/news-events/bigo-awards-gala-2026",
+    "https://blog.bigo.tv/news-events/bigo-live-launches-grateful-streams-charity-event"
+  ]
 }
