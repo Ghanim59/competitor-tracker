@@ -40,7 +40,8 @@ PLAY_STORE_APPS = {
 # replacing the "PASTE_..." placeholders. Leave a line commented out (#)
 # to skip that source until you have a working feed URL for it.
 RSS_FEEDS = {
-    # "TikTok Newsroom": "PASTE_YOUR_RSS_APP_URL_HERE",  # skipped - not yet set up
+    # "TikTok Newsroom": "PASTE_YOUR_RSS_APP_URL_HERE",  # skipped - JS-heavy, no working feed found
+    "TikTok Business Blog": "https://rss.app/feeds/XkhI9YJuLjt29E08.xml",
     "Bigo Events": "https://rss.app/feeds/3jCaB1MUpFXQUK4I.xml",
 }
 
