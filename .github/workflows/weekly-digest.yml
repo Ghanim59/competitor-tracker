@@ -2,8 +2,8 @@ name: Weekly Competitor Digest
 
 on:
   schedule:
-    # Every Monday at 06:00 UTC — edit the cron to change day/time
-    - cron: '0 6 * * 1'
+    # Every Sunday at 05:00 UTC = 08:00 AM Riyadh time (UTC+3)
+    - cron: '0 5 * * 0'
   workflow_dispatch: {}  # lets you trigger it manually from the Actions tab
 
 permissions:
